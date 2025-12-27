@@ -401,5 +401,16 @@ body::after{
 }
 .site-footer__links a:hover{ filter: saturate(1.1) contrast(1.05); }
 
+/* Заголовок в одну строку на мобиле */
+@media (max-width: 420px){
+  .title{
+    white-space: nowrap;
+    font-size: clamp(16px, 4.6vw, 24px);
+    letter-spacing: .03em;
+    line-height: 1.05;
+  }
+}
+
+
 
 
