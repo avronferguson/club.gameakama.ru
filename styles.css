@@ -401,15 +401,49 @@ body::after{
 }
 .site-footer__links a:hover{ filter: saturate(1.1) contrast(1.05); }
 
-/* Заголовок в одну строку на мобиле */
-@media (max-width: 420px){
+/* One-line neon title */
+.title{
+  text-align:center;
+  margin: 0 0 10px;
+}
+
+.title__inner{
+  display:inline-flex;
+  align-items:center;
+  gap: 10px;
+
+  white-space: nowrap;
+  padding: 10px 14px;
+  border-radius: 14px;
+
+  background: rgba(0,0,0,.30);
+  border: 1px solid rgba(120,245,255,.22);
+
+  box-shadow:
+    0 10px 28px rgba(0,0,0,.35),
+    0 0 0 1px rgba(255,255,255,.04) inset,
+    0 0 22px rgba(51,230,255,.22),
+    0 0 22px rgba(181,92,255,.16);
+
+  backdrop-filter: blur(8px);
+}
+
+@media (max-width: 520px){
   .title{
-    white-space: nowrap;
-    font-size: clamp(16px, 4.6vw, 24px);
+    font-size: clamp(16px, 4.2vw, 22px);
     letter-spacing: .03em;
     line-height: 1.05;
   }
+  .title__inner{
+    gap: 8px;
+    padding: 9px 12px;
+  }
 }
+
+@media (max-width: 380px){
+  .title__inner .zap{ display:none; }
+}
+
 
 
 
