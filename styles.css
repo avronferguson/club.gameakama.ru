@@ -413,6 +413,11 @@ body::after{
   .title{
     letter-spacing: .03em;
     line-height: 1.05;
-  }
 }
+
+.title{
+  display: inline-block;
+  text-align: center;
+}
+
 
