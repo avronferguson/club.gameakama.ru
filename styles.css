@@ -400,3 +400,19 @@ body::after{
   border-bottom: 1px dashed rgba(120, 245, 255, .35);
 }
 .site-footer__links a:hover{ filter: saturate(1.1) contrast(1.05); }
+
+/* Mobile: ровный центр заголовка */
+.title{
+  text-wrap: balance;
+  max-width: 22ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 420px){
+  .title{
+    letter-spacing: .03em;
+    line-height: 1.05;
+  }
+}
+
