@@ -1,90 +1,54 @@
-// All site JS moved here to reduce inline scripts and simplify CSP tightening later.
 (function () {
-  // 1) Copy promo code
-  document.addEventListener("click", async (e) => {
-    const b = e.target.closest(".copy");
-    if (!b) return;
+  const toast = document.getElementById("toast");
 
-    const t = b.getAttribute("data-copy") || "";
-    try {
-      await navigator.clipboard.writeText(t);
-      b.textContent = "✓";
-    } catch {
-      b.textContent = "…";
-    }
-    setTimeout(() => (b.textContent = "⧉"), 900);
+  function showToast(text) {
+    if (!toast) return;
+    toast.textContent = text;
+    toast.classList.add("toast--show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove("toast--show"), 1400);
+  }
+
+  // Подставляем рандомные числа (как на скрине)
+  document.querySelectorAll(".js-rand").forEach((el) => {
+    const min = Number(el.dataset.min || 300);
+    const max = Number(el.dataset.max || 400);
+    const v = Math.floor(min + Math.random() * (max - min + 1));
+    el.textContent = String(v);
   });
 
-  // 2) Daily stats (deterministic per day via localStorage)
-  const WIN_MIN = 300000;
-  const WIN_MAX = 950000;
+  // Подставляем "выигрыш" в ₽
+  document.querySelectorAll(".js-money").forEach((el) => {
+    const min = Number(el.dataset.min || 250000);
+    const max = Number(el.dataset.max || 500000);
+    const v = Math.floor(min + Math.random() * (max - min + 1));
+    el.textContent = v.toLocaleString("ru-RU") + " ₽";
+  });
 
-  const REG_MIN = 200;
-  const REG_MAX = 700;
+  // Кнопки "Начать играть": берём data-link (чтобы в HTML было удобно менять)
+  document.querySelectorAll('a.btn[data-link]').forEach((a) => {
+    const link = a.getAttribute("data-link");
+    if (link) a.setAttribute("href", link);
+  });
 
-  function formatRub(n) {
-    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₽";
-  }
-
-  function hashToFloat(str) {
-    let h = 2166136261;
-    for (let i = 0; i < str.length; i++) {
-      h ^= str.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return (h >>> 0) / 4294967295;
-  }
-
-  function todayKey() {
-    const d = new Date();
-    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-  }
-
-  function dailyStats() {
-    const day = todayKey();
-
-    document.querySelectorAll('[data-win="1"]').forEach((el, i) => {
-      const card = el.closest(".card");
-      const name = card?.querySelector(".brand__name")?.textContent || "card";
-      const key = `win_${day}_${name}_${i}`;
-
-      let val = localStorage.getItem(key);
-      if (!val) {
-        const r = hashToFloat(key);
-        val = Math.round(WIN_MIN + r * (WIN_MAX - WIN_MIN));
-        localStorage.setItem(key, val);
+  // Copy промокода
+  document.querySelectorAll(".js-copy").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const value = btn.getAttribute("data-copy") || btn.textContent.trim();
+      try {
+        await navigator.clipboard.writeText(value);
+        showToast("Промокод скопирован");
+      } catch {
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = value;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        showToast("Промокод скопирован");
       }
-      el.textContent = formatRub(+val);
     });
-
-    document.querySelectorAll('[data-reg="1"]').forEach((el, i) => {
-      const card = el.closest(".card");
-      const name = card?.querySelector(".brand__name")?.textContent || "card";
-      const key = `reg_${day}_${name}_${i}`;
-
-      let val = localStorage.getItem(key);
-      if (!val) {
-        const r = hashToFloat(key);
-        val = Math.round(REG_MIN + r * (REG_MAX - REG_MIN));
-        localStorage.setItem(key, val);
-      }
-      el.textContent = val;
-    });
-  }
-
-  // 3) Harden external links (in case some are missed in HTML)
-  function hardenLinks() {
-    document.querySelectorAll('a[target="_blank"]').forEach((a) => {
-      const rel = new Set((a.getAttribute("rel") || "").split(/\s+/).filter(Boolean));
-      rel.add("noopener");
-      rel.add("noreferrer");
-      rel.add("nofollow");
-      a.setAttribute("rel", Array.from(rel).join(" "));
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    dailyStats();
-    hardenLinks();
   });
 })();
+
