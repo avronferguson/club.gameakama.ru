@@ -401,6 +401,14 @@ body::after{
 }
 .site-footer__links a:hover{ filter: saturate(1.1) contrast(1.05); }
 
+.title{
+  text-shadow:
+    0 2px 22px rgba(0,0,0,.55),
+    0 0 14px rgba(60,210,255,.12),
+    0 0 20px rgba(220,90,255,.10);
+}
+
+
 
 
 
